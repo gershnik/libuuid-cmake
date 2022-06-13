@@ -9,6 +9,11 @@ into a simple CMake workflow.
 
 This project allows you to use libuuid directly from CMake with no extra steps or complications. 
 
+## Requirements
+
+* CMake 3.21 or newer
+* Internet connection when _configuring_ CMake. Note that this project automatically fetches libuuid sources from github.
+
 ## Usage
 
 ### Dependency with FetchContent
@@ -51,7 +56,7 @@ You can also build and install libuuid on your system using CMake (though in thi
 Note that man pages will only be generated if you have [Asciidoctor](https://asciidoctor.org) available.
 
 1. Download or clone this repository into SOME_PATH
-2. 
+2. Do something like this on command line
 ```bash
 cd SOME_PATH
 mkdir build && cd build
@@ -77,9 +82,12 @@ If you don't explicitly set either `LIBUUID_SHARED` or `LIBUUID_STATIC` the beha
 
 * If the libuuid project is not a top level project then the enabled variant depends on `BUILD_SHARED_LIBS`.
   If `BUILD_SHARED_LIBS` is `ON` then the shared library target will be enabled. Otherwise - the static one.
-* If the libuuid project is a top level project then both variants are enabled
+* If the libuuid project is a top level project then both variants are enabled.
 
-The targets can be:
+You can [set()](https://cmake.org/cmake/help/latest/command/set.html) `LIBUUID_SHARED`, `LIBUUID_STATIC` and `BUILD_SHARED_LIBS` in your CMake script prior to 
+adding libuuid or specify them on CMake command line.
+
+The exposed targets can be:
 
 * `uuid::uuid_static` - the static library
 * `uuid::uuid_shared` - the shared library
