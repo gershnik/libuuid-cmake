@@ -1,4 +1,10 @@
 # libuuid-cmake
+
+[![Language](https://img.shields.io/badge/language-CMake-blue.svg)](https://cmake.org)
+[![Version](https://img.shields.io/badge/CMake-21-blue.svg)](https://cmake.org/cmake/help/latest/release/3.21.html)
+[![License](https://img.shields.io/badge/license-BSD-brightgreen.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![Tests](https://github.com/gershnik/libuuid-cmake/actions/workflows/test.yml/badge.svg)](https://github.com/gershnik/libuuid-cmake/actions/workflows/test.yml)
+
 CMake build for [libuuid](https://github.com/util-linux/util-linux/tree/master/libuuid) library from [util-linux](https://github.com/util-linux/util-linux)
 
 Libuuid is a portable, [BSD licensed](https://github.com/util-linux/util-linux/blob/master/libuuid/COPYING), 
@@ -13,6 +19,11 @@ This project allows you to use libuuid directly from CMake with no extra steps o
 
 * CMake 3.21 or newer
 * Internet connection when _configuring_ CMake. Note that this project automatically fetches libuuid sources from github.
+
+## Versioning
+
+The tags in this repository directly correspond to tags in [util-linux](https://github.com/util-linux/util-linux). Thus if you use
+`v2.38` from here you will be using libuuid code at `v2.38` in `util-linux`.
 
 ## Usage
 
