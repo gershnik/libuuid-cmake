@@ -19,31 +19,23 @@ jobs:
         os: [macos-latest, ubuntu-latest]
     
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: 2.7
 
-    - uses: reitzig/actions-asciidoctor@v2.0.0
-
-    - name: Create Build Environment
-      run: cmake -E make_directory ${{runner.workspace}}/build
+    - name: Install Asciidoctor
+      run: gem install asciidoctor -v '>= 2.0.18'
 
     - name: Configure CMake
-      shell: bash
-      working-directory: ${{runner.workspace}}/build
-      run: cmake -S $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+      run: |
+        cmake -E make_directory build
+        cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
 
     - name: Build and Test
-      working-directory: ${{runner.workspace}}/build
-      shell: bash
-      run: cmake --build . --config $BUILD_TYPE --target all run-tests
+      run: cmake --build build --config ${{ env.BUILD_TYPE }} --target all run-tests
 
     - name: Install
-      working-directory: ${{runner.workspace}}/build
-      shell: bash
-      run: cmake --install . --config $BUILD_TYPE --prefix $GITHUB_WORKSPACE/stage
+      run: cmake --install build --config ${{ env.BUILD_TYPE }} --prefix stage
 
-
-    
