@@ -23,7 +23,7 @@ This project allows you to use libuuid directly from CMake with no extra steps o
 ## Versioning
 
 The tags in this repository directly correspond to tags in [util-linux](https://github.com/util-linux/util-linux). Thus if you use
-`v2.38.1` from here you will be using libuuid code at `v2.38.1` in `util-linux`.
+`v2.39` from here you will be using libuuid code at `v2.39` in `util-linux`.
 
 ## Usage
 
@@ -34,7 +34,7 @@ include(FetchContent)
 ...
 FetchContent_Declare(libuuid
     GIT_REPOSITORY  https://github.com/gershnik/libuuid-cmake.git
-    GIT_TAG         v2.38.1
+    GIT_TAG         v2.39
     GIT_SHALLOW     TRUE
 )
 ...
