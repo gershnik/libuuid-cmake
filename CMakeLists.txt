@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.21)
 
 project(libuuid-cmake)
 
-set(UTIL_LINUX_VERSION "2.38.1")
+set(UTIL_LINUX_VERSION "2.39")
 
 if (NOT DEFINED LIBUUID_STATIC AND NOT DEFINED LIBUUID_SHARED)
 
