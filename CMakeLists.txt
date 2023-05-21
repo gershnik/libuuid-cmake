@@ -42,12 +42,30 @@ include(config.cmake)
 
 set(PUBLIC_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/include)
 
-# add_custom_command(
-#     OUTPUT ${PUBLIC_INCLUDE_DIR}/uuid/uuid.h
-#     DEPENDS ${ORIG_SRC}/libuuid/src/uuid.h
-#     COMMAND ${CMAKE_COMMAND} -E make_directory ${PUBLIC_INCLUDE_DIR}/uuid
-#     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${ORIG_SRC}/libuuid/src/uuid.h ${PUBLIC_INCLUDE_DIR}/uuid
-# )
+
+add_library(uuid_header INTERFACE EXCLUDE_FROM_ALL)
+
+# Single interface only library for the public header
+# This is to avoid having the heder in both shared and static libs
+# Which is not well supported by some generators (e.g. Xcode)
+list(APPEND INSTALL_LIBS uuid_header)
+
+target_sources(uuid_header 
+INTERFACE
+    ${PUBLIC_INCLUDE_DIR}/uuid/uuid.h
+)
+set_target_properties(uuid_header PROPERTIES PUBLIC_HEADER ${PUBLIC_INCLUDE_DIR}/uuid/uuid.h)
+
+add_custom_command(
+    OUTPUT ${PUBLIC_INCLUDE_DIR}/uuid/uuid.h
+    DEPENDS ${ORIG_SRC}/libuuid/src/uuid.h
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${PUBLIC_INCLUDE_DIR}/uuid
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${ORIG_SRC}/libuuid/src/uuid.h ${PUBLIC_INCLUDE_DIR}/uuid
+)
+
+set_source_files_properties(${PUBLIC_INCLUDE_DIR}/uuid/uuid.h PROPERTIES GENERATED ON)
+
+#Define static and shared libs
 
 if (LIBUUID_SHARED)
     list(APPEND BUILD_SUFFIXES "shared")
@@ -65,6 +83,11 @@ foreach(suffix ${BUILD_SUFFIXES})
 
     list(APPEND INSTALL_LIBS uuid_${suffix})
 
+    target_link_libraries(uuid_${suffix}
+    PUBLIC
+        uuid_header
+    )
+
     target_compile_definitions(uuid_${suffix}
     PRIVATE
         ${CONFIG_DEFINES}
@@ -77,11 +100,7 @@ foreach(suffix ${BUILD_SUFFIXES})
         ${ORIG_SRC}/include
     )
 
-    set_target_properties(uuid_${suffix} PROPERTIES PUBLIC_HEADER ${PUBLIC_INCLUDE_DIR}/uuid/uuid.h)
-
     target_sources(uuid_${suffix}
-    PUBLIC
-        ${PUBLIC_INCLUDE_DIR}/uuid/uuid.h
     PRIVATE
         ${ORIG_SRC}/libuuid/src/uuid.h
         ${ORIG_SRC}/libuuid/src/uuidP.h
@@ -103,16 +122,6 @@ foreach(suffix ${BUILD_SUFFIXES})
     ) 
 
     add_library(uuid::uuid_${suffix} ALIAS uuid_${suffix})
-
-    #We do this instead of commented add_custom_command with OUTPUT
-    #because Xcode generator doesn't support the same output attached to multiple targets
-    #We don't use BYPRODUCTS here because Ninja cannot have the same byproduct in
-    #multiple targets. Sigh
-    add_custom_command(TARGET uuid_${suffix} PRE_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${PUBLIC_INCLUDE_DIR}/uuid
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${ORIG_SRC}/libuuid/src/uuid.h ${PUBLIC_INCLUDE_DIR}/uuid
-    )
-    set_source_files_properties(${PUBLIC_INCLUDE_DIR}/uuid/uuid.h PROPERTIES GENERATED ON)
 
     if (PROJECT_IS_TOP_LEVEL)
 
