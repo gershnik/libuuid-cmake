@@ -3,6 +3,10 @@
 
 cmake_minimum_required(VERSION 3.21)
 
+if (POLICY CMP0135)
+    cmake_policy(SET CMP0135 NEW) #use DOWNLOAD_EXTRACT_TIMESTAMP
+endif()
+
 project(libuuid-cmake)
 
 set(UTIL_LINUX_VERSION "2.39")
@@ -27,11 +31,20 @@ set(LIBUUID_STATIC ${LIBUUID_STATIC} CACHE BOOL "Whether to produce static lib" 
 include(FetchContent)
 
 FetchContent_Declare(util-linux
-    GIT_REPOSITORY  https://github.com/util-linux/util-linux
-    GIT_TAG         v${UTIL_LINUX_VERSION}
-    GIT_SHALLOW     TRUE
-    GIT_PROGRESS    TRUE
-    GIT_SUBMODULES_RECURSE FALSE
+    # We cannot use plain Git here because occasianolly
+    # util-linux does some git shenanigans that result in
+    # old removed files being detected as modified by git
+    # (e.g. tests/expected/libmount/optstr-apply-user-x)
+    # It is safer to fetch the whole thing as a tarball from
+    # Github
+
+    #GIT_REPOSITORY  https://github.com/util-linux/util-linux
+    #GIT_TAG         v${UTIL_LINUX_VERSION}
+    #GIT_SHALLOW     TRUE
+    #GIT_PROGRESS    TRUE
+    #GIT_SUBMODULES_RECURSE FALSE
+
+    URL              https://github.com/util-linux/util-linux/tarball/v${UTIL_LINUX_VERSION}
 )
 
 FetchContent_MakeAvailable(util-linux)
