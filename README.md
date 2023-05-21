@@ -22,8 +22,18 @@ This project allows you to use libuuid directly from CMake with no extra steps o
 
 ## Versioning
 
-The tags in this repository directly correspond to tags in [util-linux](https://github.com/util-linux/util-linux). Thus if you use
-`v2.39` from here you will be using libuuid code at `v2.39` in `util-linux`.
+The tags in this repository have the following form:
+
+```
+util-linux-tag[.revN]
+```
+
+Where `util-linux-tag` is the release tag in [util-linux](https://github.com/util-linux/util-linux) such as `v2.38` 
+`v2.39` etc.
+The optional revision field is used when there are changes/bug fixes etc. in *this repository*. The numeric value
+`N` is incremented by 1 every time a new revision is released.
+Thus, `v2.39.rev1` is a newer revision than `v2.39` and both include `libuuid` version `v2.39`
+
 
 ## Usage
 
@@ -59,6 +69,11 @@ target_link_libraries(mytarget
 PRIVATE
   uuid::uuid
 )
+```
+
+Regardless of which method you use the `uuid.h` header will be available via
+```c
+#include <uuid/uuid.h>
 ```
 
 ### Building and installing on your system
