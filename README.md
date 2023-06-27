@@ -28,8 +28,8 @@ The tags in this repository have the following form:
 util-linux-tag[.revN]
 ```
 
-Where `util-linux-tag` is the release tag in [util-linux](https://github.com/util-linux/util-linux) such as `v2.38` 
-`v2.39` etc.
+Where `util-linux-tag` is the release tag in [util-linux](https://github.com/util-linux/util-linux) such as `v2.39` 
+`v2.39.1` etc.
 The optional revision field is used when there are changes/bug fixes etc. in *this repository*. The numeric value
 `N` is incremented by 1 every time a new revision is released.
 Thus, `v2.39.rev1` is a newer revision than `v2.39` and both include `libuuid` version `v2.39`
@@ -44,7 +44,7 @@ include(FetchContent)
 ...
 FetchContent_Declare(libuuid
     GIT_REPOSITORY  https://github.com/gershnik/libuuid-cmake.git
-    GIT_TAG         v2.39
+    GIT_TAG         v2.39.1
     GIT_SHALLOW     TRUE
 )
 ...

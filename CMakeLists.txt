@@ -9,7 +9,7 @@ endif()
 
 project(libuuid-cmake)
 
-set(UTIL_LINUX_VERSION "2.39")
+set(UTIL_LINUX_VERSION "2.39.1")
 
 if (NOT DEFINED LIBUUID_STATIC AND NOT DEFINED LIBUUID_SHARED)
 
