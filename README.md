@@ -28,7 +28,7 @@ The tags in this repository have the following form:
 util-linux-tag[.revN]
 ```
 
-Where `util-linux-tag` is the release tag in [util-linux](https://github.com/util-linux/util-linux) such as `v2.39` 
+Where `util-linux-tag` is the release tag in [util-linux](https://github.com/util-linux/util-linux) such as `v2.39`, 
 `v2.39.1` etc.
 The optional revision field is used when there are changes/bug fixes etc. in *this repository*. The numeric value
 `N` is incremented by 1 every time a new revision is released.
@@ -78,23 +78,27 @@ Regardless of which method you use the `uuid.h` header will be available via
 
 ### Building and installing on your system
 
-You can also build and install libuuid on your system using CMake (though in this case you might as well just use original util-linux build).
+You can also build and install libuuid on your system using CMake (this is only useful on non-Linux platforms,
+since on Linux you might as well just use original util-linux build).
 Note that man pages will only be generated if you have [Asciidoctor](https://asciidoctor.org) available.
 
 1. Download or clone this repository into SOME_PATH
 2. Do something like this on command line
 ```bash
 cd SOME_PATH
-mkdir build && cd build
-cmake -S .. 
+cmake -S . -B build 
+cmake --build build
 
 #Optional
-#make run-tests
+#cmake --build build --target run-tests
 
-sudo make install
+sudo cmake --install build
 #or for custom prefix
-cmake --install . --prefix some-dir
+cmake --install build --prefix some-dir
 ```
+
+The installation above sets things up so that you can do `find_package(uuid)` from CMake as well as use
+`pkg-config --libs --cflags uuid` if you have `pkg-config` available.
 
 ## Settings and targets
 

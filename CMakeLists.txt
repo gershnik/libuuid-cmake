@@ -7,9 +7,8 @@ if (POLICY CMP0135)
     cmake_policy(SET CMP0135 NEW) #use DOWNLOAD_EXTRACT_TIMESTAMP
 endif()
 
-project(libuuid-cmake)
+project(libuuid-cmake VERSION "2.39.1")
 
-set(UTIL_LINUX_VERSION "2.39.1")
 
 if (NOT DEFINED LIBUUID_STATIC AND NOT DEFINED LIBUUID_SHARED)
 
@@ -39,12 +38,12 @@ FetchContent_Declare(util-linux
     # Github
 
     #GIT_REPOSITORY  https://github.com/util-linux/util-linux
-    #GIT_TAG         v${UTIL_LINUX_VERSION}
+    #GIT_TAG         v${PROJECT_VERSION}
     #GIT_SHALLOW     TRUE
     #GIT_PROGRESS    TRUE
     #GIT_SUBMODULES_RECURSE FALSE
 
-    URL              https://github.com/util-linux/util-linux/tarball/v${UTIL_LINUX_VERSION}
+    URL              https://github.com/util-linux/util-linux/tarball/v${PROJECT_VERSION}
 )
 
 FetchContent_MakeAvailable(util-linux)
@@ -59,13 +58,14 @@ set(PUBLIC_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/include)
 add_library(uuid_header INTERFACE EXCLUDE_FROM_ALL)
 
 # Single interface only library for the public header
-# This is to avoid having the heder in both shared and static libs
+# This is to avoid having the header in both shared and static libs
 # Which is not well supported by some generators (e.g. Xcode)
 list(APPEND INSTALL_LIBS uuid_header)
 
 target_sources(uuid_header 
 INTERFACE
-    ${PUBLIC_INCLUDE_DIR}/uuid/uuid.h
+    $<BUILD_INTERFACE:${PUBLIC_INCLUDE_DIR}/uuid/uuid.h>
+    $<INSTALL_INTERFACE:uuid/uuid.h>
 )
 set_target_properties(uuid_header PROPERTIES PUBLIC_HEADER ${PUBLIC_INCLUDE_DIR}/uuid/uuid.h)
 
@@ -104,11 +104,13 @@ foreach(suffix ${BUILD_SUFFIXES})
     target_compile_definitions(uuid_${suffix}
     PRIVATE
         ${CONFIG_DEFINES}
+        "PACKAGE_STRING=${PROJECT_NAME} ${PROJECT_VERSION}"
     )
 
     target_include_directories(uuid_${suffix}
     INTERFACE
-        ${PUBLIC_INCLUDE_DIR}
+        $<BUILD_INTERFACE:${PUBLIC_INCLUDE_DIR}>
+        $<INSTALL_INTERFACE:include> # means <prefix>/include
     PRIVATE
         ${ORIG_SRC}/include
     )
@@ -191,7 +193,7 @@ endif()
 #Shared library versioning
 if (LIBUUID_SHARED)
     set_target_properties(uuid_shared PROPERTIES 
-        VERSION ${UTIL_LINUX_VERSION}
+        VERSION ${PROJECT_VERSION}
         SOVERSION 1
     )
 
@@ -214,10 +216,55 @@ endif()
 
 # Installing
 include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
 install(
     TARGETS ${INSTALL_LIBS}
+    EXPORT uuid
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/uuid
+)
+
+install(
+    EXPORT uuid 
+    NAMESPACE uuid:: 
+    FILE uuid-exports.cmake 
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/uuid
+)
+
+configure_package_config_file(
+        ${CMAKE_CURRENT_LIST_DIR}/uuid-config.cmake.in
+        ${CMAKE_CURRENT_BINARY_DIR}/uuid-config.cmake
+    INSTALL_DESTINATION
+        ${CMAKE_INSTALL_LIBDIR}/uuid
+)
+
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/uuid-config-version.cmake
+    COMPATIBILITY SameMajorVersion
+    ARCH_INDEPENDENT
+)
+
+install(
+    FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/uuid-config.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/uuid-config-version.cmake
+    DESTINATION
+        ${CMAKE_INSTALL_LIBDIR}/uuid
+)
+
+file(RELATIVE_PATH FROM_PCFILEDIR_TO_PREFIX ${CMAKE_INSTALL_FULL_DATAROOTDIR}/uuid ${CMAKE_INSTALL_PREFIX})
+string(REGEX REPLACE "/+$" "" FROM_PCFILEDIR_TO_PREFIX "${FROM_PCFILEDIR_TO_PREFIX}") 
+
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/uuid.pc.in
+    ${CMAKE_CURRENT_BINARY_DIR}/uuid.pc
+    @ONLY
+)
+
+install(
+    FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/uuid.pc
+    DESTINATION
+        ${CMAKE_INSTALL_DATAROOTDIR}/uuid
 )
 
 

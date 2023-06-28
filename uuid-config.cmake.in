@@ -1,0 +1,33 @@
+@PACKAGE_INIT@
+
+
+# Avoid repeatedly including the targets
+if(NOT TARGET uuid::uuid)
+    # Provide path for scripts
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
+
+    include(${CMAKE_CURRENT_LIST_DIR}/uuid-exports.cmake)
+
+    if (NOT DEFINED LIBUUID_STATIC AND NOT DEFINED LIBUUID_SHARED)
+
+        if (BUILD_SHARED_LIBS)
+            set(LIBUUID_SHARED ON)
+            set(LIBUUID_STATIC OFF)
+        else()
+            set(LIBUUID_SHARED OFF)
+            set(LIBUUID_STATIC ON)
+        endif()
+    endif()
+
+    if (LIBUUID_SHARED AND LIBUUID_STATIC)
+        if (BUILD_SHARED_LIBS)
+            add_library(uuid::uuid ALIAS uuid::uuid_shared)
+        elseif (LIBUUID_STATIC)
+            add_library(uuid::uuid ALIAS uuid::uuid_static)
+        endif()
+    elseif (LIBUUID_SHARED)
+        add_library(uuid::uuid ALIAS uuid::uuid_shared)
+    elseif (LIBUUID_STATIC)
+        add_library(uuid::uuid ALIAS uuid::uuid_static)
+    endif()
+endif()
