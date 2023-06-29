@@ -264,7 +264,7 @@ install(
     FILES
         ${CMAKE_CURRENT_BINARY_DIR}/uuid.pc
     DESTINATION
-        ${CMAKE_INSTALL_DATAROOTDIR}/uuid
+        ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
 )
 
 

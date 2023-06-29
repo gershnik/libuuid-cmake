@@ -98,7 +98,13 @@ cmake --install build --prefix some-dir
 ```
 
 The installation above sets things up so that you can do `find_package(uuid)` from CMake as well as use
-`pkg-config --libs --cflags uuid` if you have `pkg-config` available.
+`pkg-config --libs --cflags uuid` if you have `pkg-config` available. 
+
+Note that by default `cmake` installs under `/usr/local` which might not be in the list of places your
+`pkg-config` looks into. If so you might need to do:
+```bash
+export PKG_CONFIG_PATH=/usr/local/share/pkgconfig
+```
 
 ## Settings and targets
 
