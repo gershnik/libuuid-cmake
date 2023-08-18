@@ -165,6 +165,30 @@ foreach(suffix ${BUILD_SUFFIXES})
             ${ORIG_SRC}/libuuid/src/test_uuid.c
         )
 
+        add_executable(test_uuid_ns_${suffix})
+        list(APPEND BUILT_TESTS test_uuid_ns_${suffix})
+        list(APPEND TESTS_TO_RUN "COMMAND;echo;Testing Namespaces ${suffix};&&;\$<TARGET_FILE:test_uuid_ns_${suffix}>")
+
+
+        target_link_libraries(test_uuid_ns_${suffix}
+        PRIVATE
+            uuid::uuid_${suffix}
+        )
+
+        target_include_directories(test_uuid_ns_${suffix}
+        PRIVATE
+            ${ORIG_SRC}/include
+        )
+
+        target_compile_definitions(test_uuid_ns_${suffix}
+        PRIVATE
+            ${CONFIG_DEFINES}
+        )
+
+        target_sources(test_uuid_ns_${suffix}
+        PRIVATE
+            ${ORIG_SRC}/tests/helpers/test_uuid_namespace.c
+        )
     endif()
 
 endforeach()
@@ -311,11 +335,16 @@ if (PROJECT_IS_TOP_LEVEL AND ASCIIDOCTOR_PATH AND GZIP)
         ${MAN_SOURCES}
     )
 
-
     install(
         FILES ${MAN_PAGES} 
         DESTINATION ${CMAKE_INSTALL_MANDIR}/man3
     )
+
+    install(CODE "
+        execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink uuid_generate.3.gz \${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_MANDIR}/man3/uuid_generate_random.3.gz)
+        execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink uuid_generate.3.gz \${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_MANDIR}/man3/uuid_generate_time.3.gz)
+        execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink uuid_generate.3.gz \${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_MANDIR}/man3/uuid_generate_time_safe.3.gz)
+    ")
 
 elseif(PROJECT_IS_TOP_LEVEL)
 
