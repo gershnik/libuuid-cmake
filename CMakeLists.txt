@@ -56,7 +56,7 @@ FetchContent_Declare(util-linux
     #GIT_SUBMODULES_RECURSE FALSE
 
     URL              https://github.com/util-linux/util-linux/tarball/v${PROJECT_VERSION}
-    PATCH_COMMAND    patch -i ${CMAKE_CURRENT_LIST_DIR}/patches/patch_2.40.diff 
+    PATCH_COMMAND    patch -d ${CMAKE_CURRENT_BINARY_DIR}/_deps/util-linux-src -i ${CMAKE_CURRENT_LIST_DIR}/patches/patch_2.40.diff 
     LOG_PATCH        ON
 )
 
