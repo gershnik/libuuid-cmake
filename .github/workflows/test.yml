@@ -40,9 +40,9 @@ jobs:
       run: cmake --install build --config ${{ env.BUILD_TYPE }} --prefix stage
 
     - name: Archive production artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: patch-logs
-          path: |
-            build/_deps/util-linux-subbuild/util-linux-populate-prefix/src/util-linux-populate-stamp/util-linux-populate-patch-*.log
+      uses: actions/upload-artifact@v4
+      with:
+        name: patch-logs
+        path: |
+          build/_deps/util-linux-subbuild/util-linux-populate-prefix/src/util-linux-populate-stamp/util-linux-populate-patch-*.log
 
