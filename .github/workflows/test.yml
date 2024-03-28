@@ -43,7 +43,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: patch-logs
+        name: patch-logs-${{ matrix.os }}
         path: |
           build/_deps/util-linux-subbuild/util-linux-populate-prefix/src/util-linux-populate-stamp/util-linux-populate-patch-*.log
 
