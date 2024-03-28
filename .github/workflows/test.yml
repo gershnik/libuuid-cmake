@@ -45,5 +45,5 @@ jobs:
       with:
         name: patch-logs-${{ matrix.os }}
         path: |
-          build/_deps/util-linux-subbuild/util-linux-populate-prefix/src/util-linux-populate-stamp/util-linux-populate-patch-*.log
+          build/_deps/util-linux-subbuild/util-linux-populate-prefix/src/util-linux-populate-stamp/util-linux-populate-patch-*.*
 
