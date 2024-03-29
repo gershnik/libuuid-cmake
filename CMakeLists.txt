@@ -7,7 +7,7 @@ if (POLICY CMP0135)
     cmake_policy(SET CMP0135 NEW) #use DOWNLOAD_EXTRACT_TIMESTAMP
 endif()
 
-project(libuuid-cmake VERSION "2.39.3")
+project(libuuid-cmake VERSION "2.40")
 
 
 if (NOT DEFINED LIBUUID_STATIC AND NOT DEFINED LIBUUID_SHARED)
@@ -27,6 +27,18 @@ endif()
 set(LIBUUID_SHARED ${LIBUUID_SHARED} CACHE BOOL "Whether to produce shared lib" FORCE)
 set(LIBUUID_STATIC ${LIBUUID_STATIC} CACHE BOOL "Whether to produce static lib" FORCE)
 
+if (NOT DEFINED LIBUUID_RUNSTATEDIR)
+    set(LIBUUID_RUNSTATEDIR "/run")
+endif()
+
+if (NOT DEFINED LIBUUID_LOCALSTATEDIR)
+    set(LIBUUID_LOCALSTATEDIR "/var")
+endif()
+
+set(LIBUUID_RUNSTATEDIR ${LIBUUID_RUNSTATEDIR} CACHE STRING "Run state directory" FORCE)
+set(LIBUUID_LOCALSTATEDIR ${LIBUUID_LOCALSTATEDIR} CACHE STRING "Local state directory" FORCE)
+
+
 include(FetchContent)
 
 FetchContent_Declare(util-linux
@@ -44,6 +56,8 @@ FetchContent_Declare(util-linux
     #GIT_SUBMODULES_RECURSE FALSE
 
     URL              https://github.com/util-linux/util-linux/tarball/v${PROJECT_VERSION}
+    PATCH_COMMAND    patch -p0 -s -f -V none -r /dev/null -i ${CMAKE_CURRENT_LIST_DIR}/patches/patch_2.40.diff 
+    LOG_PATCH        ON
 )
 
 FetchContent_MakeAvailable(util-linux)
@@ -103,6 +117,8 @@ foreach(suffix ${BUILD_SUFFIXES})
 
     target_compile_definitions(uuid_${suffix}
     PRIVATE
+        _PATH_RUNSTATEDIR="${LIBUUID_RUNSTATEDIR}"
+        _PATH_LOCALSTATEDIR="${LIBUUID_LOCALSTATEDIR}"
         ${CONFIG_DEFINES}
         "PACKAGE_STRING=${PROJECT_NAME} ${PROJECT_VERSION}"
     )

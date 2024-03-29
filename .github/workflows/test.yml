@@ -19,7 +19,7 @@ jobs:
         os: [macos-latest, ubuntu-latest]
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - uses: ruby/setup-ruby@v1
       with:
@@ -38,4 +38,12 @@ jobs:
 
     - name: Install
       run: cmake --install build --config ${{ env.BUILD_TYPE }} --prefix stage
+
+    - name: Archive production artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: patch-logs-${{ matrix.os }}
+        path: |
+          build/_deps/util-linux-subbuild/util-linux-populate-prefix/src/util-linux-populate-stamp/util-linux-populate-patch-*.*
 
