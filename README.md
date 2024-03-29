@@ -108,7 +108,8 @@ export PKG_CONFIG_PATH=/usr/local/share/pkgconfig
 
 ## Settings and targets
 
-There are 3 variables that affect the build.
+### Choosing static or shared libraries 
+There are 3 variables that affect the type of library built:
 
 * `LIBUUID_SHARED` - if set enables shared library target even if it otherwise wouldn't be enabled
 * `LIBUUID_STATIC` - if set enables static library target even if it otherwise wouldn't be enabled
@@ -131,4 +132,15 @@ The exposed targets can be:
   If both variants are enabled then this alias points to `uuid::uuid_shared` if `BUILD_SHARED_LIBS` is `ON` or 
   `uuid::uuid_static` otherwise.  
 
+### libuuid configuration
+
+Two additional CMake settings expose functionality originally available via configure flags of `util-linux` autoconf build. 
+These are:
+
+* `LIBUUID_RUNSTATEDIR` for `--runstatedir`. Default is `/run`
+* `LIBUUID_LOCALSTATEDIR` for `--localstatedir`. Default is `/var`
+
+The precise effects of each original flag on libuuid are poorly documented. From source code examination `runstatedir` 
+can be used as a root directory for storage of local clock state, and `localstatedir` as a root for a location for Unix domain
+sockets to communicate with `uuidd` daemon. 
 
