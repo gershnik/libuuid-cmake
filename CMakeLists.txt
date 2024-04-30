@@ -55,8 +55,8 @@ FetchContent_Declare(util-linux
     #GIT_PROGRESS    TRUE
     #GIT_SUBMODULES_RECURSE FALSE
 
-    URL              https://github.com/util-linux/util-linux/tarball/v${PROJECT_VERSION}
-    PATCH_COMMAND    patch -p0 -s -f -V none -r /dev/null -i ${CMAKE_CURRENT_LIST_DIR}/patches/patch_2.40.diff 
+    URL              https://github.com/util-linux/util-linux/archive/v${PROJECT_VERSION}.tar.gz
+    PATCH_COMMAND    patch -p0 -s -f -i ${CMAKE_CURRENT_LIST_DIR}/patches/patch_2.40.diff 
     LOG_PATCH        ON
 )
 
