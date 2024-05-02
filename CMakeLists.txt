@@ -121,6 +121,9 @@ foreach(suffix ${BUILD_SUFFIXES})
         _PATH_LOCALSTATEDIR="${LIBUUID_LOCALSTATEDIR}"
         ${CONFIG_DEFINES}
         "PACKAGE_STRING=${PROJECT_NAME} ${PROJECT_VERSION}"
+
+        #Illumos doesn't have ifr_hwaddr in struct ifreq
+        "$<$<PLATFORM_ID:SunOS>:ifr_hwaddr=ifr_ifru.ifru_addr>"
     )
 
     target_include_directories(uuid_${suffix}
