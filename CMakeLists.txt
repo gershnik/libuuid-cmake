@@ -113,6 +113,8 @@ foreach(suffix ${BUILD_SUFFIXES})
     target_link_libraries(uuid_${suffix}
     PUBLIC
         uuid_header
+    PRIVATE
+        "$<$<PLATFORM_ID:SunOS>:socket>"
     )
 
     target_compile_definitions(uuid_${suffix}
