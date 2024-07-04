@@ -7,7 +7,7 @@ if (POLICY CMP0135)
     cmake_policy(SET CMP0135 NEW) #use DOWNLOAD_EXTRACT_TIMESTAMP
 endif()
 
-project(libuuid-cmake VERSION "2.40.1")
+project(libuuid-cmake VERSION "2.40.2")
 
 
 if (NOT DEFINED LIBUUID_STATIC AND NOT DEFINED LIBUUID_SHARED)
