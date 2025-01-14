@@ -140,7 +140,7 @@ These are:
 * `LIBUUID_RUNSTATEDIR` for `--runstatedir`. Default is `/run`
 * `LIBUUID_LOCALSTATEDIR` for `--localstatedir`. Default is `/var`
 
-The precise effects of each original flag on libuuid are poorly documented. From source code examination `runstatedir` 
-can be used as a root directory for storage of local clock state, and `localstatedir` as a root for a location for Unix domain
+The precise effects of each original flag on libuuid are poorly documented. From source code examination `localstatedir`
+can be used as a root directory for storage of local clock state, and `runstatedir` as a root for a location for Unix domain
 sockets to communicate with `uuidd` daemon. 
 
