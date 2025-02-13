@@ -79,7 +79,7 @@ list(APPEND INSTALL_LIBS uuid_header)
 target_sources(uuid_header 
 INTERFACE
     $<BUILD_INTERFACE:${PUBLIC_INCLUDE_DIR}/uuid/uuid.h>
-    $<INSTALL_INTERFACE:uuid/uuid.h>
+    $<INSTALL_INTERFACE:include/uuid/uuid.h>
 )
 set_target_properties(uuid_header PROPERTIES PUBLIC_HEADER ${PUBLIC_INCLUDE_DIR}/uuid/uuid.h)
 
@@ -161,7 +161,7 @@ foreach(suffix ${BUILD_SUFFIXES})
 
     if (PROJECT_IS_TOP_LEVEL)
 
-        add_executable(test_uuid_${suffix})
+        add_executable(test_uuid_${suffix} EXCLUDE_FROM_ALL)
 
         list(APPEND BUILT_TESTS test_uuid_${suffix})
         list(APPEND TESTS_TO_RUN "COMMAND;echo;Testing ${suffix};&&;\$<TARGET_FILE:test_uuid_${suffix}>")
