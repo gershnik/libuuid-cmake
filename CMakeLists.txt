@@ -165,7 +165,11 @@ foreach(suffix ${BUILD_SUFFIXES})
         add_executable(test_uuid_${suffix} EXCLUDE_FROM_ALL)
 
         list(APPEND BUILT_TESTS test_uuid_${suffix})
-        list(APPEND TESTS_TO_RUN "COMMAND;echo;Testing ${suffix};&&;\$<TARGET_FILE:test_uuid_${suffix}>")
+        if (EMSCRIPTEN)
+            list(APPEND TESTS_TO_RUN "COMMAND;echo;Testing ${suffix};&&;node;\$<TARGET_FILE:test_uuid_${suffix}>")
+        else()
+            list(APPEND TESTS_TO_RUN "COMMAND;echo;Testing ${suffix};&&;\$<TARGET_FILE:test_uuid_${suffix}>")
+        endif()
 
         target_link_libraries(test_uuid_${suffix}
         PRIVATE
@@ -189,7 +193,11 @@ foreach(suffix ${BUILD_SUFFIXES})
 
         add_executable(test_uuid_ns_${suffix})
         list(APPEND BUILT_TESTS test_uuid_ns_${suffix})
-        list(APPEND TESTS_TO_RUN "COMMAND;echo;Testing Namespaces ${suffix};&&;\$<TARGET_FILE:test_uuid_ns_${suffix}>")
+        if (EMSCRIPTEN)
+            list(APPEND TESTS_TO_RUN "COMMAND;echo;Testing Namespaces ${suffix};&&;node;\$<TARGET_FILE:test_uuid_ns_${suffix}>")
+        else()
+            list(APPEND TESTS_TO_RUN "COMMAND;echo;Testing Namespaces ${suffix};&&;\$<TARGET_FILE:test_uuid_ns_${suffix}>")
+        endif()
 
 
         target_link_libraries(test_uuid_ns_${suffix}
