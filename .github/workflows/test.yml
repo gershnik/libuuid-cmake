@@ -7,9 +7,6 @@ on:
       - '.gitignore'
       - 'LICENSE'
 
-env:
-  BUILD_TYPE: Release
-
 jobs:
   desktop:
     runs-on: ${{ matrix.os }}
@@ -31,13 +28,13 @@ jobs:
     - name: Configure CMake
       run: |
         cmake -E make_directory build
-        cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+        cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
     - name: Build and Test
-      run: cmake --build build --config ${{ env.BUILD_TYPE }} --target all run-tests
+      run: cmake --build build --config Release --target all run-tests
 
     - name: Install
-      run: cmake --install build --config ${{ env.BUILD_TYPE }} --prefix stage
+      run: cmake --install build --config Release --prefix stage
 
     # - name: Archive production artifacts
     #   if: always()
@@ -47,3 +44,27 @@ jobs:
     #     path: |
     #       build/_deps/util-linux-subbuild/util-linux-populate-prefix/src/util-linux-populate-stamp/util-linux-populate-patch-*.*
 
+  emscripten:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set Up Emscripten
+      uses: mymindstorm/setup-emsdk@v14
+      with:
+        version: 3.1.70
+        actions-cache-folder: 'emsdk-cache'
+
+    - name: Configure
+      shell: bash
+      run: |
+        cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=$EMSDK/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+                            -DCMAKE_BUILD_TYPE=Release
+
+
+    - name: Build and Test
+      shell: bash
+      run: cmake --build build --target all run-tests
+  
