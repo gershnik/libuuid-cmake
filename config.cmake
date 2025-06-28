@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 include(CheckFunctionExists)
+include(CheckLibraryExists)
 include(CheckIncludeFile)
 include(CheckStructHasMember)
 include(CheckCSourceCompiles)
@@ -18,6 +19,11 @@ endmacro()
 
 macro(xcheck_function_exists fun var)
     check_function_exists(${fun} ${var} ${ARGN})
+    add_config_def(${ARGV1})
+endmacro()
+
+macro(xcheck_library_exists lib fun loc var)
+    check_library_exists(${lib} ${fun} ${loc} ${var} ${ARGN})
     add_config_def(${ARGV1})
 endmacro()
 
@@ -76,6 +82,8 @@ if (EMSCRIPTEN)
 endif()
 xcheck_function_exists("reallocarray" HAVE_REALLOCARRAY)
 cmake_pop_check_state()
+
+xcheck_library_exists("pthread" "pthread_atfork" "\"\"" HAVE_LIBPTHREAD)
 
 if (NOT HAVE_DIRFD)
     xcheck_symbol_exists("dirfd" "sys/types.h;dirent.h" HAVE_DECL_DIRFD)

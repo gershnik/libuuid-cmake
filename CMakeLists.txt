@@ -7,7 +7,7 @@ if (POLICY CMP0135)
     cmake_policy(SET CMP0135 NEW) #use DOWNLOAD_EXTRACT_TIMESTAMP
 endif()
 
-project(libuuid-cmake VERSION "2.41")
+project(libuuid-cmake VERSION "2.41.1")
 
 get_property(LIBUUID_ALLOW_SHARED GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS)
 
@@ -57,8 +57,6 @@ FetchContent_Declare(util-linux
     #GIT_SUBMODULES_RECURSE FALSE
 
     URL              https://github.com/util-linux/util-linux/archive/v${PROJECT_VERSION}.tar.gz
-    PATCH_COMMAND    patch -p0 -s -f -i ${CMAKE_CURRENT_LIST_DIR}/patches/patch_2.41.diff 
-    LOG_PATCH        ON
 )
 
 FetchContent_MakeAvailable(util-linux)
@@ -115,6 +113,7 @@ foreach(suffix ${BUILD_SUFFIXES})
     PUBLIC
         uuid_header
     PRIVATE
+        "$<$<BOOL:${HAVE_LIBPTHREAD}>:pthread>"
         "$<$<PLATFORM_ID:SunOS>:socket>"
     )
 
