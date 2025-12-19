@@ -7,7 +7,7 @@ if (POLICY CMP0135)
     cmake_policy(SET CMP0135 NEW) #use DOWNLOAD_EXTRACT_TIMESTAMP
 endif()
 
-project(libuuid-cmake VERSION "2.41.2")
+project(libuuid-cmake VERSION "2.41.3")
 
 get_property(LIBUUID_ALLOW_SHARED GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS)
 
