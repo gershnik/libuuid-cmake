@@ -214,6 +214,7 @@ foreach(suffix ${BUILD_SUFFIXES})
         target_compile_definitions(test_uuid_ns_${suffix}
         PRIVATE
             ${CONFIG_DEFINES}
+            ${LIBUUID_SYSTEM_EXTENSIONS}
         )
 
         target_sources(test_uuid_ns_${suffix}
