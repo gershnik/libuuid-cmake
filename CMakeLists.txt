@@ -190,7 +190,7 @@ foreach(suffix ${BUILD_SUFFIXES})
             ${ORIG_SRC}/libuuid/src/test_uuid.c
         )
 
-        add_executable(test_uuid_ns_${suffix})
+        add_executable(test_uuid_ns_${suffix} EXCLUDE_FROM_ALL)
         list(APPEND BUILT_TESTS test_uuid_ns_${suffix})
         if (EMSCRIPTEN)
             list(APPEND TESTS_TO_RUN "COMMAND;echo;Testing Namespaces ${suffix};&&;node;\$<TARGET_FILE:test_uuid_ns_${suffix}>")
