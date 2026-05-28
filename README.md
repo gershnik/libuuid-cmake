@@ -5,12 +5,12 @@
 [![License][license-badge]][license]
 [![Tests][tests-badge]][tests]
 
-CMake build for [libuuid][libuuid] library from [util-linux][util-linux]
+A CMake build for the [libuuid][libuuid] library from [util-linux][util-linux]
 
 Libuuid is a portable, [BSD-licensed][util-linux-license] library that is part of the util-linux bundle. 
 The whole bundle comes with autoconf and meson build scripts, which, while not terribly complicated to use, 
-aren't very friendly to CMake projects. The libuuid library is also available via package managers on all Linux 
-platforms, Conan and possibly other places, but these, again, introduce friction into a simple CMake workflow.
+aren't very friendly to CMake projects. The libuuid library is also available through Linux package managers, 
+Conan, and possibly other sources, but these, again, introduce friction into a simple CMake workflow.
 
 This project allows you to use libuuid directly from CMake with no extra steps or complications. 
 
@@ -117,7 +117,7 @@ There are 3 variables that affect the type of library built:
 If you don't explicitly set either `LIBUUID_SHARED` or `LIBUUID_STATIC`, the behavior is as follows:
 
 * If the libuuid project is not a top-level project, then the enabled variant depends on `BUILD_SHARED_LIBS`.
-  If `BUILD_SHARED_LIBS` is `ON`, then the shared library target will be enabled. Otherwise - the static one.
+  If `BUILD_SHARED_LIBS` is `ON`, then the shared library target will be enabled. Otherwise, the static one.
 * If the libuuid project is a top-level project, then both variants are enabled.
 
 You can [set()][cmake-set] `LIBUUID_SHARED`, `LIBUUID_STATIC` and `BUILD_SHARED_LIBS` in your CMake script prior to 
@@ -140,7 +140,7 @@ These are:
 * `LIBUUID_LOCALSTATEDIR` for `--localstatedir`. Default is `/var`
 
 The precise effects of each original flag on libuuid are poorly documented. From source code examination, `localstatedir`
-can be used as a root directory for storage of local clock state, and `runstatedir` as a root for a location for Unix domain
+can be used as a root directory for storage of local clock state, and `runstatedir` as a root location for Unix domain
 sockets to communicate with the `uuidd` daemon. 
 
 <!-- Links -->
@@ -155,7 +155,7 @@ sockets to communicate with the `uuidd` daemon.
 [cmake-set]: https://cmake.org/cmake/help/latest/command/set.html
 
 [cmake-badge]: https://img.shields.io/badge/language-CMake-blue.svg
-[cmake-version-badge]: https://img.shields.io/badge/CMake-21-blue.svg
+[cmake-version-badge]: https://img.shields.io/badge/CMake-3.21-blue.svg
 [cmake-version]: https://cmake.org/cmake/help/latest/release/3.21.html
 [license-badge]: https://img.shields.io/badge/license-BSD-brightgreen.svg
 [license]: https://opensource.org/licenses/BSD-3-Clause
