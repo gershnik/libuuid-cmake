@@ -9,6 +9,8 @@ endif()
 
 project(libuuid-cmake VERSION "2.42.1")
 
+option(BUILD_TESTING "Enable testing" ${PROJECT_IS_TOP_LEVEL})
+
 get_property(LIBUUID_ALLOW_SHARED GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS)
 
 if (NOT DEFINED LIBUUID_STATIC AND NOT DEFINED LIBUUID_SHARED)
@@ -43,7 +45,7 @@ set(LIBUUID_LOCALSTATEDIR ${LIBUUID_LOCALSTATEDIR} CACHE STRING "Local state dir
 include(FetchContent)
 
 FetchContent_Declare(util-linux
-    # We cannot use plain Git here because occasianolly
+    # We cannot use plain Git here because occasionally
     # util-linux does some git shenanigans that result in
     # old removed files being detected as modified by git
     # (e.g. tests/expected/libmount/optstr-apply-user-x)
@@ -64,6 +66,10 @@ FetchContent_MakeAvailable(util-linux)
 set(ORIG_SRC ${util-linux_SOURCE_DIR})
 
 include(config.cmake)
+
+if (BUILD_TESTING)
+    enable_testing()
+endif()
 
 set(PUBLIC_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/include)
 
@@ -160,16 +166,10 @@ foreach(suffix ${BUILD_SUFFIXES})
 
     add_library(uuid::uuid_${suffix} ALIAS uuid_${suffix})
 
-    if (PROJECT_IS_TOP_LEVEL)
+    if (BUILD_TESTING)
 
         add_executable(test_uuid_${suffix} EXCLUDE_FROM_ALL)
-
         list(APPEND BUILT_TESTS test_uuid_${suffix})
-        if (EMSCRIPTEN)
-            list(APPEND TESTS_TO_RUN "COMMAND;echo;Testing ${suffix};&&;node;\$<TARGET_FILE:test_uuid_${suffix}>")
-        else()
-            list(APPEND TESTS_TO_RUN "COMMAND;echo;Testing ${suffix};&&;\$<TARGET_FILE:test_uuid_${suffix}>")
-        endif()
 
         target_link_libraries(test_uuid_${suffix}
         PRIVATE
@@ -192,15 +192,14 @@ foreach(suffix ${BUILD_SUFFIXES})
             ${ORIG_SRC}/libuuid/src/test_uuid.c
         )
 
+        add_test(
+            NAME "${suffix}"
+            COMMAND test_uuid_${suffix}
+        )
+
         add_executable(test_uuid_ns_${suffix} EXCLUDE_FROM_ALL)
         list(APPEND BUILT_TESTS test_uuid_ns_${suffix})
-        if (EMSCRIPTEN)
-            list(APPEND TESTS_TO_RUN "COMMAND;echo;Testing Namespaces ${suffix};&&;node;\$<TARGET_FILE:test_uuid_ns_${suffix}>")
-        else()
-            list(APPEND TESTS_TO_RUN "COMMAND;echo;Testing Namespaces ${suffix};&&;\$<TARGET_FILE:test_uuid_ns_${suffix}>")
-        endif()
-
-
+        
         target_link_libraries(test_uuid_ns_${suffix}
         PRIVATE
             uuid::uuid_${suffix}
@@ -220,6 +219,11 @@ foreach(suffix ${BUILD_SUFFIXES})
         target_sources(test_uuid_ns_${suffix}
         PRIVATE
             ${ORIG_SRC}/tests/helpers/test_uuid_namespace.c
+        )
+
+        add_test(
+            NAME "Namespaces ${suffix}"
+            COMMAND test_uuid_ns_${suffix}
         )
     endif()
 
@@ -263,10 +267,9 @@ if (LIBUUID_SHARED)
 endif()
 
 # Running tests
-if (PROJECT_IS_TOP_LEVEL AND (LIBUUID_SHARED OR LIBUUID_STATIC))
-    add_custom_target(run-tests
+if (BUILD_TESTING AND (LIBUUID_SHARED OR LIBUUID_STATIC))
+    add_custom_target(tests ALL
         DEPENDS ${BUILT_TESTS}
-        ${TESTS_TO_RUN}
     )
 endif()
 

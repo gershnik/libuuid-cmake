@@ -89,7 +89,7 @@ cmake -S . -B build
 cmake --build build
 
 #Optional
-#cmake --build build --target run-tests
+#ctest --test-dir build --output-on-failure
 
 sudo cmake --install build
 #or for custom prefix

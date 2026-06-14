@@ -25,24 +25,18 @@ jobs:
     - name: Install Asciidoctor
       run: gem install asciidoctor -v '>= 2.0.18'
 
-    - name: Configure CMake
-      run: |
-        cmake -E make_directory build
-        cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+    - name: Configure
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
-    - name: Build and Test
-      run: cmake --build build --config Release --target all run-tests
+    - name: Build
+      run: cmake --build build --config Release --target tests
+
+    - name: Test
+      run: ctest --test-dir build -C Release --output-on-failure -VV
 
     - name: Install
       run: cmake --install build --config Release --prefix stage
 
-    # - name: Archive production artifacts
-    #   if: always()
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: patch-logs-${{ matrix.os }}
-    #     path: |
-    #       build/_deps/util-linux-subbuild/util-linux-populate-prefix/src/util-linux-populate-stamp/util-linux-populate-patch-*.*
 
   emscripten:
     runs-on: ubuntu-latest
@@ -64,7 +58,11 @@ jobs:
                             -DCMAKE_BUILD_TYPE=Release
 
 
-    - name: Build and Test
+    - name: Build
       shell: bash
-      run: cmake --build build --target all run-tests
+      run: cmake --build build --config Release --target tests
+
+    - name: Test
+      shell: bash
+      run: ctest --test-dir build -C Release --output-on-failure -VV
   
