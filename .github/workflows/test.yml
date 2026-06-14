@@ -29,7 +29,7 @@ jobs:
       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
     - name: Build
-      run: cmake --build build --config Release --target tests
+      run: cmake --build build --config Release --target all
 
     - name: Test
       run: ctest --test-dir build -C Release --output-on-failure -VV
@@ -60,7 +60,7 @@ jobs:
 
     - name: Build
       shell: bash
-      run: cmake --build build --config Release --target tests
+      run: cmake --build build --config Release --target all
 
     - name: Test
       shell: bash
