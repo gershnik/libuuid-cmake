@@ -7,7 +7,7 @@ if (POLICY CMP0135)
     cmake_policy(SET CMP0135 NEW) #use DOWNLOAD_EXTRACT_TIMESTAMP
 endif()
 
-project(libuuid-cmake VERSION "2.41.4")
+project(libuuid-cmake VERSION "2.41.5")
 
 option(BUILD_TESTING "Enable testing" ${PROJECT_IS_TOP_LEVEL})
 
