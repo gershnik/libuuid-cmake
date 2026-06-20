@@ -73,6 +73,17 @@ endif()
 
 set(PUBLIC_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/include)
 
+# we cannot use generator expressions for these because
+# we will need to recalculate PKGCONFIG_PRIVATE_LIBRARIES based on it
+set(PRIVATE_LIBRARIES "")
+if (HAVE_LIBPTHREAD)
+    list(APPEND PRIVATE_LIBRARIES pthread)
+endif()
+
+if (${CMAKE_SYSTEM_NAME} STREQUAL "SunOS")
+    list(APPEND PRIVATE_LIBRARIES socket)
+endif()
+
 
 add_library(uuid_header INTERFACE EXCLUDE_FROM_ALL)
 
@@ -119,8 +130,7 @@ foreach(suffix ${BUILD_SUFFIXES})
     PUBLIC
         uuid_header
     PRIVATE
-        "$<$<BOOL:${HAVE_LIBPTHREAD}>:pthread>"
-        "$<$<PLATFORM_ID:SunOS>:socket>"
+        ${PRIVATE_LIBRARIES}
     )
 
     target_compile_definitions(uuid_${suffix}
@@ -312,6 +322,12 @@ install(
 
 file(RELATIVE_PATH FROM_PCFILEDIR_TO_PREFIX ${CMAKE_INSTALL_FULL_DATAROOTDIR}/uuid ${CMAKE_INSTALL_PREFIX})
 string(REGEX REPLACE "/+$" "" FROM_PCFILEDIR_TO_PREFIX "${FROM_PCFILEDIR_TO_PREFIX}") 
+
+set(PKGCONFIG_PRIVATE_LIBRARIES "")
+foreach(lib IN ITEMS ${PRIVATE_LIBRARIES})
+    list(APPEND PKGCONFIG_PRIVATE_LIBRARIES "-l${lib}")
+endforeach()
+string(JOIN " " PKGCONFIG_PRIVATE_LIBRARIES ${PKGCONFIG_PRIVATE_LIBRARIES})
 
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/uuid.pc.in
