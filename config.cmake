@@ -13,6 +13,18 @@ include(FindUnixCommands)
 
 set(CONFIG_DEFINES "")
 
+
+# <features.h> is the header implementing the glibc/musl feature-test-macro
+# convention that _GNU_SOURCE belongs to. Its presence is a reliable proxy for
+# "this platform's headers honor _GNU_SOURCE" -- true on glibc AND musl, false
+# on macOS/BSD/Solaris/MSVC -- without hardcoding any libc identity.
+check_include_file("features.h" HAVE_FEATURES_H)
+if (HAVE_FEATURES_H)
+    list(APPEND CMAKE_REQUIRED_DEFINITIONS -D_GNU_SOURCE)   # for the checks
+    set(LIBUUID_SYSTEM_EXTENSIONS _GNU_SOURCE)              # for the build
+endif()
+
+
 macro(add_config_def name)
    list(APPEND CONFIG_DEFINES "\$<\$<BOOL:${${name}}>:${name}>")
 endmacro()

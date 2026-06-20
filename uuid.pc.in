@@ -6,6 +6,6 @@ libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
 Name: uuid
 Description: Universally unique id library
 Version: @PROJECT_VERSION@
-Requires:
 Cflags: -I${includedir}
+Libs.private: @PKGCONFIG_PRIVATE_LIBRARIES@
 Libs: -L${libdir} -luuid
